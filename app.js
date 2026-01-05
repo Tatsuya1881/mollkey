@@ -18,42 +18,30 @@ function speak(text) {
     }
 }
 
-// ON/OFFボタンの切り替えイベント
 document.querySelectorAll('.team-toggle-btn').forEach(btn => {
     btn.onclick = () => {
         btn.classList.toggle('active');
         const isActive = btn.classList.contains('active');
         btn.innerText = isActive ? "ON" : "OFF";
-        
         const input = document.getElementById(`name-${btn.dataset.id}`);
         input.disabled = !isActive;
         input.style.opacity = isActive ? "1" : "0.5";
     };
 });
 
-// 開始ボタンの処理
 document.getElementById('start-btn').onclick = async () => {
-    // .activeクラスを持つボタンのみを抽出
     const activeBtns = document.querySelectorAll('.team-toggle-btn.active');
-    
-    state.teams = Array.from(activeBtns).map(btn => {
-        const id = btn.dataset.id;
-        return {
-            name: document.getElementById(`name-${id}`).value,
-            score: 0, misses: 0, rank: 0
-        };
-    });
+    state.teams = Array.from(activeBtns).map(btn => ({
+        name: document.getElementById(`name-${btn.dataset.id}`).value || 'チーム',
+        score: 0, misses: 0, rank: 0
+    }));
 
-    if (state.teams.length === 0) {
-        alert('チームを1つ以上ONにしてください');
-        return;
-    }
+    if (state.teams.length === 0) return alert('チームを1つ以上ONにしてください');
 
     await requestWakeLock();
     document.getElementById('setup-screen').classList.add('hidden');
     document.getElementById('game-screen').classList.remove('hidden');
     
-    // キーパッド生成
     const pad = document.getElementById('num-pad');
     pad.innerHTML = ''; 
     for (let i = 1; i <= 12; i++) {
@@ -66,19 +54,25 @@ document.getElementById('start-btn').onclick = async () => {
 };
 
 function addScore(p) {
-    state.history.push(JSON.stringify({teams: state.teams, turn: state.turn, winners: state.winners}));
+    // 履歴保存
+    state.history.push(JSON.stringify({
+        teams: JSON.parse(JSON.stringify(state.teams)), 
+        turn: state.turn, 
+        winners: state.winners
+    }));
     
     let t = state.teams[state.turn];
     if (p === 0) {
-        t.misses++;
-        if (t.misses >= 3) {
-            t.score = 0;
-            t.rank = 99; // 失格
-            showToast(`${t.name} 3回ミスで失格！`);
+        // ミスカウントを最大3回までに制限
+        if (t.misses < 3) {
+            t.misses++;
+            if (t.misses === 3) {
+                showToast("失格ですが続けて頑張りましょう！");
+            }
         }
     } else {
         t.score += p;
-        t.misses = 0;
+        t.misses = 0; // スコア獲得でミスリセット
     }
 
     speak(`${t.name}、${t.score}点`);
@@ -96,10 +90,7 @@ function addScore(p) {
 }
 
 function moveNextTurn() {
-    // 全員が終了（ランクあり）なら終了
     if (state.teams.every(t => t.rank > 0)) { render(); return; }
-    
-    // 次の未終了プレイヤーを探す
     do {
         state.turn = (state.turn + 1) % state.teams.length;
     } while (state.teams[state.turn].rank > 0);
@@ -123,8 +114,6 @@ function render() {
         card.onclick = () => selectTeam(i);
         
         let medalHtml = (t.rank >= 1 && t.rank <= 3) ? `<div class="medal">${medals[t.rank]}</div>` : '';
-        if (t.rank === 99) medalHtml = `<div class="medal">❌</div>`;
-        
         let remainingHtml = t.rank > 0 ? `<div class="remaining" style="visibility:hidden">残り 0</div>` : `<div class="remaining">残り ${50 - t.score}</div>`;
 
         card.innerHTML = `
@@ -132,7 +121,7 @@ function render() {
             <div class="team-name">${t.name}</div>
             <div class="points">${t.score}</div>
             ${remainingHtml}
-            <div class="miss-count">${t.misses >= 1 ? '✕'.repeat(Math.min(t.misses, 3)) : ''}</div>
+            <div class="miss-count">${t.misses >= 1 ? '✕'.repeat(t.misses) : ''}</div>
         `;
         sb.appendChild(card);
     });
@@ -144,7 +133,7 @@ function showToast(m) {
     e.className = 'toast';
     e.innerText = m;
     c.appendChild(e);
-    setTimeout(() => e.remove(), 2000);
+    setTimeout(() => e.remove(), 3000); // メッセージを長めに表示
 }
 
 function undo() {
@@ -158,5 +147,5 @@ function undo() {
 }
 
 function resetGame() {
-    if (confirm("ゲームを終了して設定に戻りますか？")) location.reload();
+    if (confirm("ゲームを終了して設定画面に戻りますか？")) location.reload();
 }
