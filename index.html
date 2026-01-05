@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <link rel="icon" href="apple-touch-icon.png"> <meta name="theme-color" content="#607d8b">
+    <meta name="theme-color" content="#607d8b">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
@@ -16,26 +17,26 @@
 
     <div id="setup-screen" class="screen">
         <div class="setup-container">
-            <h1 style="color:#455a64; margin-bottom:20px; font-size: 1.5rem;">モルック カウンター</h1>
+            <h1 style="color:#455a64; margin-bottom:20px; font-size: 1.4rem;">モルック カウンター</h1>
             <div class="team-setup-list">
                 <div class="team-input-row">
                     <button type="button" class="team-toggle-btn active" data-id="0">ON</button>
-                    <input type="text" id="name-0" value="A組" onfocus="this.select()">
+                    <input type="text" id="name-0" value="A組" onfocus="this.select()" maxlength="10">
                 </div>
                 <div class="team-input-row">
                     <button type="button" class="team-toggle-btn active" data-id="1">ON</button>
-                    <input type="text" id="name-1" value="B組" onfocus="this.select()">
+                    <input type="text" id="name-1" value="B組" onfocus="this.select()" maxlength="10">
                 </div>
                 <div class="team-input-row">
                     <button type="button" class="team-toggle-btn" data-id="2">OFF</button>
-                    <input type="text" id="name-2" value="C組" onfocus="this.select()" disabled style="opacity:0.5;">
+                    <input type="text" id="name-2" value="C組" onfocus="this.select()" disabled style="opacity:0.5;" maxlength="10">
                 </div>
                 <div class="team-input-row">
                     <button type="button" class="team-toggle-btn" data-id="3">OFF</button>
-                    <input type="text" id="name-3" value="D組" onfocus="this.select()" disabled style="opacity:0.5;">
+                    <input type="text" id="name-3" value="D組" onfocus="this.select()" disabled style="opacity:0.5;" maxlength="10">
                 </div>
             </div>
-            <button id="start-btn" style="width:100%; height:55px; border-radius:30px; border:none; background:#607d8b; color:white; font-size:1.2rem; font-weight:bold; margin-top:15px;">ゲーム開始</button>
+            <button id="start-btn" style="width:100%; height:55px; border-radius:30px; border:none; background:#607d8b; color:white; font-size:1.2rem; font-weight:bold; margin-top:20px;">ゲーム開始</button>
         </div>
     </div>
 
