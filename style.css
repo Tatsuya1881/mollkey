@@ -1,0 +1,97 @@
+:root {
+    --bg-color: #f0f4f7;
+    --accent: #607d8b;
+    --text-dark: #2c3e50;
+    --border: #cfd8dc;
+    --on-color: #4caf50;
+    --off-color: #e0e0e0;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body, html {
+    margin: 0; padding: 0;
+    height: 100dvh; /* 動的ビューポート高さ */
+    width: 100%;
+    font-family: "Hiragino Sans", "Meiryo", sans-serif;
+    background-color: var(--bg-color);
+    overflow: hidden;
+    position: fixed; /* バウンス防止 */
+}
+
+.screen { 
+    height: 100dvh; 
+    display: flex; 
+    flex-direction: column; 
+    width: 100%;
+}
+.hidden { display: none !important; }
+
+/* --- 設定画面 --- */
+.setup-container { 
+    padding: 25px 15px; 
+    text-align: center; 
+    margin: auto; 
+    width: 92%; /* 画面幅に収める */
+    max-width: 400px;
+    background: white; 
+    border-radius: 20px; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.team-input-row { 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    margin-bottom: 12px; 
+    width: 100%; /* これが重要 */
+}
+
+.team-toggle-btn {
+    width: 65px; height: 45px; border-radius: 10px; border: 2px solid var(--border);
+    background-color: var(--off-color); color: #757575; font-weight: bold;
+    cursor: pointer; transition: 0.2s; flex-shrink: 0;
+}
+.team-toggle-btn.active { background-color: var(--on-color); color: white; border-color: #388e3c; }
+
+input[type="text"] { 
+    flex: 1; 
+    min-width: 0; /* フレックスボックス内での幅はみ出しを防止 */
+    padding: 12px; 
+    border: 2px solid var(--border); 
+    border-radius: 10px; 
+    font-size: 1rem;
+}
+
+/* --- ゲーム画面 --- */
+#scoreboard { 
+    display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; 
+    gap: 6px; padding: 6px; height: 42%; background: #cfd8dc; 
+}
+.score-card { background: white; border-radius: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 4px solid transparent; position: relative; }
+.score-card.active { border-color: var(--accent); background: #fbfdfe; }
+.team-name { font-size: 2.5vh; font-weight: bold; color: var(--accent); }
+.points { font-size: 6.5vh; font-weight: 900; color: #1a237e; line-height: 1; }
+.remaining { font-size: 1.6vh; color: #78909c; }
+.miss-count { font-size: 1.6vh; color: #e57373; min-height: 1.8vh; }
+.medal { position: absolute; top: 0; right: 2px; font-size: 3.5vh; }
+
+#controls { 
+    flex: 1; display: flex; flex-direction: column; 
+    padding: 8px; 
+    /* 下部のナビゲーションバーを避けるためのパディング */
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 15px)); 
+    gap: 8px; background: white; 
+}
+.miss-btn { width: 100%; height: 12%; min-height: 48px; border-radius: 10px; border: 2px solid var(--border); background: #fdfdfd; font-weight: bold; flex-shrink: 0; }
+.grid-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; flex: 1; }
+.grid-keys button { font-size: 1.5rem; font-weight: bold; border: 2px solid var(--border); border-radius: 10px; background: #fff; }
+
+.bottom-btns { display: flex; gap: 8px; height: 10%; min-height: 50px; flex-shrink: 0; }
+.bottom-btns button { flex: 1; border: none; border-radius: 10px; background: #90a4ae; color: white; font-weight: bold; font-size: 0.9rem; }
+
+#toast-container { position: fixed; top: 12%; left: 50%; transform: translateX(-50%); z-index: 1000; pointer-events: none; }
+.toast { background: rgba(0,0,0,0.85); color: white; padding: 12px 24px; border-radius: 25px; margin-bottom: 6px; animation: fade 2.5s forwards; }
+@keyframes fade { 0%{opacity:0} 10%{opacity:1} 90%{opacity:1} 100%{opacity:0} }
